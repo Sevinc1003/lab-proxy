@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+:root {
+  --background: #05060a;
+  --foreground: #e6fbff;
+  /* readable, dimmed text — used instead of low-opacity foreground */
+  --muted: #93a7bd;
+
+  /* ── Coherent palette ──────────────────────────────────────────
+     primary = cyan, secondary = magenta, accent = green.
+     Use them by ROLE and never interchange them: primary is always
+     the main action color, secondary is always the alt/accent color. */
+  --primary: #00f0ff;
+  --primary-strong: #5af6ff; /* hover / emphasis shade of primary */
+  --secondary: #ff2bd6;
+  --secondary-strong: #ff6ee2; /* hover / emphasis shade of secondary */
+  --accent: #39ff14;
+
+  --panel: #0b0f1a;
+  --panel-border: #1b2740;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-panel: var(--panel);
+  --color-panel-border: var(--panel-border);
+
+  /* semantic, role-based color names */
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-secondary: var(--secondary);
+  --color-secondary-strong: var(--secondary-strong);
+  --color-accent: var(--accent);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* ── Reusable cyberpunk helpers (plain CSS, easy to restyle) ───────── */
+
+/* Soft glow only — strong enough to read as "neon", subtle enough to
+   keep letterforms crisp. Use on small accents, NOT large headings. */
+.neon-text {
+  text-shadow: 0 0 6px color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.neon-border {
+  border: 1px solid var(--primary);
+  box-shadow:
+    0 0 6px rgba(0, 240, 255, 0.35),
+    inset 0 0 8px rgba(0, 240, 255, 0.1);
+}
+
+/* faint moving scanlines overlay; add to a container */
+.scanlines {
+  position: relative;
+}
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 240, 255, 0.025) 0px,
+    rgba(0, 240, 255, 0.025) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+/* subtle flicker for the brand title */
+.glitch {
+  animation: flicker 3.5s infinite;
+}
+@keyframes flicker {
+  0%, 19%, 21%, 23%, 100% { opacity: 1; }
+  20% { opacity: 0.7; }
+  22% { opacity: 0.85; }
+}
+
+/* pulsing "online" dot */
+.pulse-dot {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--accent); }
+  50% { opacity: 0.4; box-shadow: 0 0 0 var(--accent); }
+}
+
+/* grid background flavor — kept very faint so it never competes with
+   text or strains low-vision readers. */
+.cyber-grid {
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+/* ── Accessibility: drop decorative noise & motion on request ─────── */
+@media (prefers-reduced-motion: reduce) {
+  .glitch,
+  .pulse-dot {
+    animation: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .cyber-grid {
+    background-image: none;
+  }
+  .scanlines::after {
+    display: none;
+  }
+  .neon-text {
+    text-shadow: none;
+  }
+}
